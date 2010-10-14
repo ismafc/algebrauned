@@ -188,11 +188,11 @@ public class MatrixNxM {
     /**
      * Resuelve el sistema de dos ecuaciones con dos incógnitas y devuelve el
      * resultado en el vector 'd' de dos posiciones.
-     * Si no tiene solución se devuelve en 'd' dos Double.NaN
-     * Si tiene infinitas soluciones se devuelve en 'd' dos Double.POSITIVE_INFINITY
+     * Si no tiene solución se devuelve en 'd' (Double.NaN, Double.NaN)
+     * Si tiene infinitas soluciones se devuelve en 'd' (Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)
      * Si tiene una solución se devuelve en 'd' (x, y)
      * @param d vector donde se devuelve el resultado
-     * @return True si la matriz tienes las dimensiones correctas 2x3 y el vector de resultados 2
+     * @return Cierto si la matriz y el vector de resultados tienen las dimensiones correctas (2x3 y 2 respectivamente)
      */
     public boolean solve2x2(double[] d) {
         // Primero comprobamos que podemos analizar el sistema y almacenar los resultados
