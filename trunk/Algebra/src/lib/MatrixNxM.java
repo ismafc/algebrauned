@@ -225,6 +225,9 @@ public class MatrixNxM {
     /**
      * Reordena las filas a partir de la fila 'fila' en función de los elementos
      * de la columna 'columna'. Pone todas las filas con el valor de esa columna a 0 al final.
+     * Se supone que los índices 'fila' y 'columna' están dentro del rango de la matriz
+     * @param fila índice de la fila a partir de la que debemos buscar ceros y ponerlos al final
+     * @param columna en la que debemos buscar los ceros.
      * @return Falso si todos los valores a partir de la fila 'fila' en la columna 'columna' son 0. Cierto si hay algun valor diferente de cero.
      */
     private boolean reordenacionCeros(int fila, int columna) {
@@ -242,7 +245,7 @@ public class MatrixNxM {
                 }
                 else
                     // Sólo quedan valores a 0 el las filas inferiores a 'fila'
-                    // en la columna 'columna'
+                    // en la columna 'columna'. Hemos terminado.
                     break;
             }
             fila++;
@@ -251,7 +254,44 @@ public class MatrixNxM {
     }
 
     /**
-     * TODO: Terminar!!!!
+     * Transforma el elemento (fila, columna) en pivote (1)
+     * Se supone que los índices 'fila' y 'columna' están dentro del rango de la matriz
+     * @param fila índice de la fila a partir de la que debemos buscar ceros y ponerlos al final
+     * @param columna en la que debemos buscar los ceros.
+     * @return Falso si valor de esa posición es cero. Cierto en caso contrario.
+     */
+    private boolean pivote(int fila, int columna) {
+        double divisor = values[fila][columna];
+        if (divisor == 0.0)
+            return false;
+        for (int c = columna; c < columns; c++)
+            values[fila][c] /= divisor;
+        return true;
+    }
+
+    /**
+     * Se supone que el índice índices 'columna' está dentro del rango de la matriz
+     * @param fila índice de la fila a partir de la que debemos hacer ceros ceros (se hacen a partir del pivote de la fila anterior)
+     * @param columna en la que debemos hacer los ceros.
+     * @return Falso si valor de la fila anterior en la columna dada no es pivote o el índice 'fila' está fuera de rango.
+     */
+    private boolean hacerCeros(int fila, int columna) {
+        if (fila <= 0 || fila >= rows)
+            return false;
+        // No es pivote
+        if (values[fila - 1][columna] != 1.0)
+            return false;
+        for (int f = fila; f < rows; f++) {
+            double factor = -values[f][columna];
+            values[f][columna] = 0;
+            for (int c = columna + 1; c < columns; c++) {
+                values[f][c] = values[fila -1][c] * factor + values[f][c];
+            }
+        }
+        return true;
+    }
+
+    /**
      * Diagonaliza la matriz por debajo aplicando el método de eliminación gaussiana.
      * Modifica la matriz.
      * @return Cierto siempre
@@ -260,12 +300,12 @@ public class MatrixNxM {
         int fila = 0;
         int columna = 0;
         while (fila < rows && columna < columns) {
-            if (!reordenacionCeros(fila, columna)) {
+            if (reordenacionCeros(fila, columna)) {
                 columna++;
                 continue;
             }
-            //pivote(fila, columna);
-            //hacerCeros(fila, columna);
+            pivote(fila, columna);
+            hacerCeros(fila + 1, columna);
             fila++;
             columna++;
         }

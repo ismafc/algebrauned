@@ -19,23 +19,23 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         BufferedReader bf = new BufferedReader (new InputStreamReader(System.in));
-        double[][] d = new double[2][3];
-        double[] r = new double[2];
-        System.out.print("a11 = ");
-        d[0][0] = new Double(bf.readLine()).doubleValue(); // a11
-        System.out.print("a12 = ");
-        d[0][1] = new Double(bf.readLine()).doubleValue(); // a12
-        System.out.print("b1 = ");
-        d[0][2] = new Double(bf.readLine()).doubleValue(); // b1
-        System.out.print("a21 = ");
-        d[1][0] = new Double(bf.readLine()).doubleValue(); // a21
-        System.out.print("a22 = ");
-        d[1][1] = new Double(bf.readLine()).doubleValue(); // a22
-        System.out.print("b2 = ");
-        d[1][2] = new Double(bf.readLine()).doubleValue(); // b2
+        System.out.print("filas = ");
+        int filas = new Integer(bf.readLine()).intValue();
+        System.out.print("columnas = ");
+        int columnas = new Integer(bf.readLine()).intValue();
+        double[][] d = new double[filas][columnas];
+        double[] r = new double[columnas - 1];
+        for (int f = 0; f < filas; f++) {
+            for (int c = 0; c < columnas; c++) {
+                System.out.print("M[" + f + "][" + c + "] = ");
+                d[f][c] = new Double(bf.readLine()).doubleValue();
+            }
+        }
         MatrixNxM matrix = new MatrixNxM(d);
+        matrix.eliminacionGaussiana();
+        System.out.println(matrix.toString());
         if (!matrix.solve2x2(r))
-            System.out.println("No se pudo resolver el sistema " + matrix);
+            System.out.println("No se pudo resolver el sistema (no es 2x3)" + matrix);
         else {
             if (Double.isNaN(r[0]) && Double.isNaN(r[1]))
                 System.out.println("El sistema no tiene solución");
