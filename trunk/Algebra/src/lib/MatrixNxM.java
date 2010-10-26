@@ -186,6 +186,93 @@ public class MatrixNxM {
     }
 
     /**
+     * Intercambia dos filas de la matriz. Modifica la matriz.
+     * @param f1 índice de la fila a intercambiar
+     * @param f2 índice de la fila a intercambiar
+     * @return Falso si los índices de las filas que se desean intercambiar son incorrectos. Cierto si es posible.
+     */
+    public boolean swap(int f1, int f2) {
+        if (f1 < 0 || f2 < 0 || f1 >= rows || f2 >= rows || f1 == f2)
+            return false;
+        double v;
+        for (int c = 0; c < columns; c++) {
+            v = values[f1][c];
+            values[f1][c] = values[f2][c];
+            values[f2][c] = v;
+        }
+        return true;
+    }
+
+    /**
+     * Busca el índice de la última fila con el valor de la columna 'c' diferente de 0
+     * Se empieza a partir de la última fila y se acaba en la fila 'lf'.
+     * @param lf índice de la fila hasta la que debemos buscar
+     * @param c índice de la columna en la que debemos buscar
+     * @return Entero con el índice de la fila encontrada (si no se encuentra o no es posible buscarlo se devuelve 'lf')
+     */
+    private int findLastRowDiff0(int lf, int c) {
+        if (lf < 0 || lf >= rows || c < 0 || c >= columns)
+            return lf;
+        int f = rows - 1;
+        while (f >= lf) {
+            if (values[f][c] != 0.0)
+                break;
+            f--;
+        }
+        return f;
+    }
+
+    /**
+     * Reordena las filas a partir de la fila 'fila' en función de los elementos
+     * de la columna 'columna'. Pone todas las filas con el valor de esa columna a 0 al final.
+     * @return Falso si todos los valores a partir de la fila 'fila' en la columna 'columna' son 0. Cierto si hay algun valor diferente de cero.
+     */
+    private boolean reordenacionCeros(int fila, int columna) {
+        boolean todoCeros = true;
+        while (fila < rows) {
+            if (values[fila][columna] != 0.0)
+                todoCeros = false;
+            else {
+                int nfila = findLastRowDiff0(fila, columna);
+                if (nfila > fila) {
+                    // Hemos encontrado un valor diferente de 0 en la
+                    // fila 'nfila' y la columna 'columna'.
+                    swap(fila, nfila);
+                    todoCeros = false;
+                }
+                else
+                    // Sólo quedan valores a 0 el las filas inferiores a 'fila'
+                    // en la columna 'columna'
+                    break;
+            }
+            fila++;
+        }
+        return todoCeros;
+    }
+
+    /**
+     * TODO: Terminar!!!!
+     * Diagonaliza la matriz por debajo aplicando el método de eliminación gaussiana.
+     * Modifica la matriz.
+     * @return Cierto siempre
+     */
+    public boolean eliminacionGaussiana() {
+        int fila = 0;
+        int columna = 0;
+        while (fila < rows && columna < columns) {
+            if (!reordenacionCeros(fila, columna)) {
+                columna++;
+                continue;
+            }
+            //pivote(fila, columna);
+            //hacerCeros(fila, columna);
+            fila++;
+            columna++;
+        }
+        return true;
+    }
+
+    /**
      * Resuelve el sistema de dos ecuaciones con dos incógnitas y devuelve el
      * resultado en el vector 'd' de dos posiciones.
      * Si no tiene solución se devuelve en 'd' (Double.NaN, Double.NaN)
