@@ -272,6 +272,7 @@ public class MatrixNxM {
 
     /**
      * Se supone que el índice índices 'columna' está dentro del rango de la matriz
+     * Esta función hace ceros los elementos de la columna dada a partir de la fila dada
      * @param fila índice de la fila a partir de la que debemos hacer ceros ceros (se hacen a partir del pivote de la fila anterior)
      * @param columna en la que debemos hacer los ceros.
      * @return Falso si valor de la fila anterior en la columna dada no es pivote o el índice 'fila' está fuera de rango.
@@ -282,12 +283,13 @@ public class MatrixNxM {
         // No es pivote
         if (values[fila - 1][columna] != 1.0)
             return false;
+        // Transformamos todas las filas a partir de 'fila' hacia abajo
         for (int f = fila; f < rows; f++) {
             double factor = -values[f][columna];
-            values[f][columna] = 0;
-            for (int c = columna + 1; c < columns; c++) {
-                values[f][c] = values[fila -1][c] * factor + values[f][c];
-            }
+            values[f][columna] = 0.0;
+            // Transformamos toda la fila 'f' a partir de la columna 'columna + 1'
+            for (int c = columna + 1; c < columns; c++)
+                values[f][c] = values[fila - 1][c] * factor + values[f][c];
         }
         return true;
     }
@@ -313,22 +315,61 @@ public class MatrixNxM {
         return true;
     }
 
+    /**
+     * Busca el pivote (1) dentro de la fila especificada y antes de la columna especificada
+     * @param fila índice de la fila en la que debemos buscar el pivote (1)
+     * @param columna máxima en la que debe estar el pivote (1).
+     * @return el índice de la columna en la que se encuentra el pivote (1) dentro de la fila. Si todos los valores son 0 devuelve -1, si el primer valor no es un pivote devuelve Integer.MAX_VALUE y si los parametros de entrada no son correctos devuelve Integer.MIN_VALUE
+     */
+    private int buscarPivote(int fila, int columna) {
+        if (fila < 0 || fila >= rows || columna < 0 || columna >= columns)
+            return Integer.MIN_VALUE;
+        for (int c = 0; c < columna; c++) {
+            if (values[fila][c] == 1.0)
+                return c;
+            else if(values[fila][c] != 0.0)
+                return Integer.MAX_VALUE;
+        }
+        return -1;
+    }
+
+    private boolean hacerCerosInverso(int fila, int columna) {
+        if (fila < 0 || fila >= rows - 1 || columna < 0 || columna >= columns)
+            return false;
+        // No es pivote
+        if (values[fila + 1][columna] != 1.0)
+            return false;
+        // Transformamos todas las filas desde 'fila' hacia arriba
+        for (int f = fila; f >= 0; f--) {
+            double factor = -values[f][columna];
+            values[f][columna] = 0.0;
+            // Transformamos toda la fila 'f' a partir de la columna 'columna + 1'
+            for (int c = columna + 1; c < columns; c++)
+                values[f][c] = values[fila + 1][c] * factor + values[f][c];
+        }
+        return true;
+    }
+
+    /**
+     * Pasa la matriz a su forma escalonada reducida por filas y pivote por el método de Gauss-Jordan
+     * @return Cierto si puedo realizarse, Falso si no pude realizarse la operación.
+     */
     public boolean gaussJordan() {
         if (!eliminacionGaussiana())
             return false;
         int fila = rows - 1;
         int columna = columns - 1;
-        while (fila >= 0 && columna >= 0) {
-            int nfila = buscarPivote(fila, columna);
-            if (nfila == Integer.MAX_VALUE)
+        while (fila > 0 && columna >= 0) {
+            int ncolumna = buscarPivote(fila, columna);
+            if (ncolumna == Integer.MAX_VALUE)
                 return false;
-            else if (nfila < 0) {
+            else if (ncolumna < 0)
                 fila--;
-            }
             else {
-                hacerCerosInverso(fila - 1, columna);
+                if (!hacerCerosInverso(fila - 1, ncolumna))
+                    return false;
                 fila--;
-                columna--;
+                columna = ncolumna;
             }
         }
         return true;

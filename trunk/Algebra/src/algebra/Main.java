@@ -32,7 +32,8 @@ public class Main {
             }
         }
         MatrixNxM matrix = new MatrixNxM(d);
-        matrix.eliminacionGaussiana();
+        if (!matrix.gaussJordan())
+            System.out.println("Hubo problemas!!!!");
         System.out.println(matrix.toString());
         if (!matrix.solve2x2(r))
             System.out.println("No se pudo resolver el sistema (no es 2x3)" + matrix);
