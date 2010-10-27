@@ -11,7 +11,7 @@
 package lib;
 
 /**
- * Implements a 4 x 4 matrix (of double values)
+ * Implements a N x M double values matrix (N rows and M columns)
  * @author Isma
  */
 public class MatrixNxM {
@@ -264,7 +264,8 @@ public class MatrixNxM {
         double divisor = values[fila][columna];
         if (divisor == 0.0)
             return false;
-        for (int c = columna; c < columns; c++)
+        values[fila][columna] = 1.0;
+        for (int c = columna + 1; c < columns; c++)
             values[fila][c] /= divisor;
         return true;
     }
@@ -308,6 +309,27 @@ public class MatrixNxM {
             hacerCeros(fila + 1, columna);
             fila++;
             columna++;
+        }
+        return true;
+    }
+
+    public boolean gaussJordan() {
+        if (!eliminacionGaussiana())
+            return false;
+        int fila = rows - 1;
+        int columna = columns - 1;
+        while (fila >= 0 && columna >= 0) {
+            int nfila = buscarPivote(fila, columna);
+            if (nfila == Integer.MAX_VALUE)
+                return false;
+            else if (nfila < 0) {
+                fila--;
+            }
+            else {
+                hacerCerosInverso(fila - 1, columna);
+                fila--;
+                columna--;
+            }
         }
         return true;
     }
