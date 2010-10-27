@@ -379,7 +379,7 @@ public class Object3D {
     
     /** 
      * Calculates length of object 'o'
-     * @param v Three components object to calculate its length
+     * @param o Three components object to calculate its length
      * @return Double containing o length
      */
     static public double length(Object3D o) {
