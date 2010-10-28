@@ -288,8 +288,11 @@ public class MatrixNxM {
             double factor = -values[f][columna];
             values[f][columna] = 0.0;
             // Transformamos toda la fila 'f' a partir de la columna 'columna + 1'
-            for (int c = columna + 1; c < columns; c++)
+            for (int c = columna + 1; c < columns; c++) {
                 values[f][c] = values[fila - 1][c] * factor + values[f][c];
+                // Solventar error de precisión cuando debería dar cero y no da cero
+                values[f][c] = (Math.abs(values[f][c]) < Matlib.EPSILON) ? 0.0 : values[f][c];
+            }
         }
         return true;
     }
@@ -344,8 +347,11 @@ public class MatrixNxM {
             double factor = -values[f][columna];
             values[f][columna] = 0.0;
             // Transformamos toda la fila 'f' a partir de la columna 'columna + 1'
-            for (int c = columna + 1; c < columns; c++)
+            for (int c = columna + 1; c < columns; c++) {
                 values[f][c] = values[fila + 1][c] * factor + values[f][c];
+                // Solventar error de precisión cuando debería dar cero y no da cero
+                values[f][c] = (Math.abs(values[f][c]) < Matlib.EPSILON) ? 0.0 : values[f][c];
+            }
         }
         return true;
     }

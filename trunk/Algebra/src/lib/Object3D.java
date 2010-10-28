@@ -355,6 +355,7 @@ public class Object3D {
      * Asks for a String representation of this Object3D (x,y,z)
      * @return String representing this Object3D 
      */
+    @Override
     public String toString() {
         return "(" + x + ", " + y + ", " + z + ")";
     }
