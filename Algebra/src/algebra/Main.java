@@ -31,7 +31,7 @@ public class Main {
                 d[f][c] = new Double(bf.readLine()).doubleValue();
             }
         }
-        MatrixNxM matrix = new MatrixNxM(d);
+        MatrixMxN matrix = new MatrixMxN(d);
         if (!matrix.gaussJordan())
             System.out.println("Hubo problemas!!!!");
         System.out.println(matrix.toString());

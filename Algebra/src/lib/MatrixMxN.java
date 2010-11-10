@@ -1,5 +1,5 @@
 /*
- * MatrixNxM.java
+ * MatrixMxN.java
  *
  * Created on 13 de agosto de 2005, 14:05
  *
@@ -11,10 +11,10 @@
 package lib;
 
 /**
- * Implements a N x M double values matrix (N rows and M columns)
+ * Implements a M x N double values matrix (M rows and N columns)
  * @author Isma
  */
-public class MatrixNxM {
+public class MatrixMxN {
 
     /** 
      * Contains number of rows for this matrix (by default 4)
@@ -31,20 +31,20 @@ public class MatrixNxM {
      * This variable is calculated in 'inverse' function and is erased when
      * the matrix changes in some way.
      */
-    private MatrixNxM inverseMatrix = null;
+    private MatrixMxN inverseMatrix = null;
     
     /** 
      * Contains the doubles that allows to this matrix (row, column)
-     * stored in a N x M array of doubles
+     * stored in a M x N array of doubles
      */
     protected double[][] values = new double[rows][columns];
     
     /**
      * 
-     * Creates a new instance of MatrixNxM 
+     * Creates a new instance of MatrixMxN
      * It's initialized to identity 4 x 4 matrix
      */
-    public MatrixNxM() {
+    public MatrixMxN() {
         super();
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
@@ -53,10 +53,10 @@ public class MatrixNxM {
     
     /**
      * 
-     * Creates a new instance of MatrixNxM initialized with parameter
-     * @param nvalues array of N x M double used to initialized matrix
+     * Creates a new instance of MatrixMxN initialized with parameter
+     * @param nvalues array of M x N double used to initialized matrix
      */
-    public MatrixNxM(double[][] nvalues) {
+    public MatrixMxN(double[][] nvalues) {
         super();
         if (nvalues.length > 0) {
             if (nvalues[0].length > 0) {
@@ -71,10 +71,10 @@ public class MatrixNxM {
     
     /**
      * 
-     * Creates a new instance of MatrixNxM initialized with parameter
+     * Creates a new instance of MatrixMxN initialized with parameter
      * @param m the new matrix used to initialize this
      */
-    public MatrixNxM(MatrixNxM m) {
+    public MatrixMxN(MatrixMxN m) {
         super();
         rows = m.rows;
         columns = m.columns;
@@ -85,12 +85,12 @@ public class MatrixNxM {
 
     /**
      * 
-     * Creates a new instance of MatrixNxM initialized with parameters
+     * Creates a new instance of MatrixMxN initialized with parameters
      * Matrix is initialized to identity
      * @param nrows Number of rows of new matrix
      * @param ncolumns Number of columns of new matrix
      */
-    public MatrixNxM(int nrows, int ncolumns) {
+    public MatrixMxN(int nrows, int ncolumns) {
         super();
         rows = (nrows <= 0) ? rows : nrows;
         columns = (ncolumns <= 0) ? columns : ncolumns;
@@ -105,7 +105,7 @@ public class MatrixNxM {
      * @param m The matrix to compare with
      * @return True if both matrix are equals and False if not
      */
-    public boolean equals(MatrixNxM m) {
+    public boolean equals(MatrixMxN m) {
         if (rows != m.rows || columns != m.columns)
             return false;
         for (int i = 0; i < m.rows; i++)
@@ -132,13 +132,13 @@ public class MatrixNxM {
      * If it's calculated then return it directly
      * @return Returns a N x N matrix containing the inverse of this matrix
      */
-    public MatrixNxM getInverse() {
+    public MatrixMxN getInverse() {
         if (inverseMatrix != null)
             return inverseMatrix;
         double d = determinant(values);
         if (d == 0.0 || d == Double.NaN)
             return null;
-        inverseMatrix = new MatrixNxM(rows, columns);
+        inverseMatrix = new MatrixMxN(rows, columns);
         // Transposed adjunts matrix divided by determinant
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < columns; j++)
@@ -155,7 +155,7 @@ public class MatrixNxM {
             inverseMatrix = getInverse();
         if (inverseMatrix == null)
             return false;
-        MatrixNxM m = new MatrixNxM(this);
+        MatrixMxN m = new MatrixMxN(this);
         set(inverseMatrix);
         inverseMatrix = m;
         return true;
@@ -178,7 +178,7 @@ public class MatrixNxM {
      * Copies matrix 'm' in this matrix (clonation)
      * @param m Matrix to be copied in
      */
-    public void set(MatrixNxM m) {
+    public void set(MatrixMxN m) {
         rows = m.rows;
         columns = m.columns;
         values = m.values;
@@ -440,12 +440,24 @@ public class MatrixNxM {
         }
     }
 
+    /**
+     * Multiplies 'm1' by escalar 'v' and returns a matrix with the result of this operation
+     * @param m1 Matrix to be multiplied
+     * @param v Scalar to multiply to matrix
+     * @return A matrix with m1.v
+     */
+    static public MatrixMxN mul(MatrixMxN m1, double v) {
+        MatrixMxN m = new MatrixMxN(m1);
+        m.mul(v);
+        return m;
+    }
+
     /** 
      * Multiplies this matrix by 'm' matrix (composition)
      * @param m Matrix to compose to this matrix
      * @return True if multiplication is possible and False if not
      */
-    public boolean mul(MatrixNxM m) {
+    public boolean mul(MatrixMxN m) {
         if (columns != m.rows || columns == 0 || rows == 0 || m.columns == 0 || m.rows == 0)
             return false;
         double[][] v = new double[rows][m.columns];
@@ -468,8 +480,8 @@ public class MatrixNxM {
      * @param m2 Second matrix to composite
      * @return A matrix with m1.m2 or null if multiplication is not possible
      */
-    static public MatrixNxM mul(MatrixNxM m1, MatrixNxM m2) {
-        MatrixNxM m = new MatrixNxM(m1);
+    static public MatrixMxN mul(MatrixMxN m1, MatrixMxN m2) {
+        MatrixMxN m = new MatrixMxN(m1);
         if (m.mul(m2))
             return m;
         else
@@ -619,7 +631,7 @@ public class MatrixNxM {
         // double gamma = Math.atan2(o.x, Math.sqrt(o.y * o.y + o.z * o.z));
         
         // toRotationX(-beta);
-        // MatrixNxM m = new MatrixNxM();
+        // MatrixMxN m = new MatrixMxN();
         // m.toRotationY(gamma);
         // mul(m);
         // m.toRotationZ(r);
@@ -699,7 +711,7 @@ public class MatrixNxM {
             }
         }
         else if (o instanceof Normal3D) {
-            MatrixNxM m = getInverse();
+            MatrixMxN m = getInverse();
             result[0] = m.values[0][0] * o.x + m.values[1][0] * o.y + m.values[2][0] * o.z;
             result[1] = m.values[0][1] * o.x + m.values[1][1] * o.y + m.values[2][1] * o.z;
             result[2] = m.values[0][2] * o.x + m.values[1][2] * o.y + m.values[2][2] * o.z;
@@ -776,7 +788,7 @@ public class MatrixNxM {
      * @param m Matrix to add to this matrix
      * @return True if addition is possible and False if not
      */
-    public boolean add(MatrixNxM m) {
+    public boolean add(MatrixMxN m) {
         if (rows != m.rows || columns != m.columns)
             return false;
         for (int i = 0; i < rows; i++)
@@ -786,12 +798,27 @@ public class MatrixNxM {
         return true;
     }
 
+    /**
+     * Adds the matrix 'm1' to matrix 'm2' and returns a new matrix with result
+     * if it is posible
+     * @param m1 First matrix to add
+     * @param m2 Second matrix to add
+     * @return Matrix if addition is possible and null if not
+     */
+    static public MatrixMxN add(MatrixMxN m1, MatrixMxN m2) {
+        MatrixMxN m = new MatrixMxN(m1);
+        if (m.add(m2))
+            return m;
+        else
+            return null;
+    }
+
     /** 
      * Substracts the matrix 'm' to this matrix
      * @param m Matrix to substract to this matrix
      * @return True if substraction is possible and False if not
      */
-    public boolean sub(MatrixNxM m) {
+    public boolean sub(MatrixMxN m) {
         if (rows != m.rows || columns != m.columns)
             return false;
         for (int i = 0; i < rows; i++)
