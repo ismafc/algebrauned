@@ -18,6 +18,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
+        // Introducimos la matriz
         BufferedReader bf = new BufferedReader (new InputStreamReader(System.in));
         System.out.print("filas = ");
         int filas = new Integer(bf.readLine()).intValue();
